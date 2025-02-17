@@ -11,7 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.action = exports.loader = exports.createThemeCookie = exports.getThemeFromCookie = exports.useTheme = void 0;
 const react_1 = require("react");
-const react_router_1 = require("react-router");
 /**
  * Use the theme value wherever you want (probably as the data-theme attribute on your html-tag)
  *
@@ -19,11 +18,11 @@ const react_router_1 = require("react-router");
  *
  * @returns [theme, setTheme] A stateful theme variable value and it's setter
  */
-const useTheme = (loaderData) => {
-    if (!loaderData.theme)
+const useTheme = (loaderData, fetcher) => {
+    const { theme: initialTheme } = loaderData;
+    if (!initialTheme)
         throw new Error("No theme returned from loader");
-    const [theme, setTheme] = (0, react_1.useState)(loaderData.theme);
-    const fetcher = (0, react_router_1.useFetcher)();
+    const [theme, setTheme] = (0, react_1.useState)(initialTheme);
     const changeTheme = (theme) => {
         setTheme(theme);
         localStorage.setItem("theme", theme);

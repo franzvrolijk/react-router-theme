@@ -1,6 +1,6 @@
 {
   "name": "react-router-theme",
-  "version": "1.0.3",
+  "version": "1.0.11",
   "description": "Theme support for React Router v7",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,7 +28,7 @@
   "devDependencies": {
     "typescript": "^5.7.3"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@types/react": "^19.0.9",
     "react": "^19.0.0",
     "react-router": "^7.1.5"

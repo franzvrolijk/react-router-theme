@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ActionFunction, ActionFunctionArgs, LoaderFunction, LoaderFunctionArgs, useFetcher, useLoaderData } from "react-router";
+import { ActionFunction, ActionFunctionArgs, FetcherWithComponents, LoaderFunction, LoaderFunctionArgs } from "react-router";
 
 /**
  * Use the theme value wherever you want (probably as the data-theme attribute on your html-tag)
@@ -8,12 +8,12 @@ import { ActionFunction, ActionFunctionArgs, LoaderFunction, LoaderFunctionArgs,
  *
  * @returns [theme, setTheme] A stateful theme variable value and it's setter
  */
-export const useTheme = (loaderData: { theme: string }) => {
-  if (!loaderData.theme) throw new Error("No theme returned from loader");
+export const useTheme = (loaderData: { theme: string }, fetcher: FetcherWithComponents<any>) => {
+  const { theme: initialTheme } = loaderData;
 
-  const [theme, setTheme] = useState<string>(loaderData.theme);
+  if (!initialTheme) throw new Error("No theme returned from loader");
 
-  const fetcher = useFetcher();
+  const [theme, setTheme] = useState<string>(initialTheme);
 
   const changeTheme = (theme: string) => {
     setTheme(theme);
