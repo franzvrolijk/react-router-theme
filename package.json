@@ -1,0 +1,35 @@
+{
+  "name": "react-router-theme",
+  "version": "1.0.0",
+  "description": "Theme support for React Router v7",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/franzvrolijk/react-router-theme.git"
+  },
+  "keywords": [
+    "react",
+    "router",
+    "v7",
+    "theme",
+    "ssr",
+    "cookie"
+  ],
+  "author": "Franz Vrolijk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/franzvrolijk/react-router-theme/issues"
+  },
+  "homepage": "https://github.com/franzvrolijk/react-router-theme#readme",
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@types/react": "^19.0.9",
+    "react": "^19.0.0",
+    "react-router": "^7.1.5"
+  }
+}
