@@ -1,30 +1,30 @@
 # react-router-theme
 
-Package for storing the user's preferred theme, making sure that:
+## What
 
-- the correct theme is rendered on the server in SSR, removing the initial flash of default theme on load
-- all tabs and windows displaying your app are immediately affected when changing themes
+- ✅ SSR themes without flashing
+- ✅ Immediate updates across windows and tabs
+- ✅ Perfect for [daisyUI](https://daisyui.com/) themes
+- ✅ Works with [Tailwind CSS data attribute](https://tailwindcss.com/docs/dark-mode#using-a-data-attribute) themes
+- ✅ Works with system-preference dark mode (prefers-color-scheme) themes
+- ✅ Made for React Router v7
 
-Ideal for (but not limited to) CSS libraries that support the `<html data-theme="...">` attribute, such as daisyUI.
+## How
 
-Package contents:
+This package provides a useTheme-hook along with a pre-defined loader and action to simplify enabling "SSR themes". Utility functions for implementing this in custom loaders and actions are also provided.
 
-- pre-made loader and action functions for React Router v7
-- functions for storing and retrieving theme cookies (when not using the premade loader and action)
-- useTheme-hook
-  - returns both user preferred theme, as well as a setter that updates local state, cookies and local storage
-  - registers event listener to theme-updates in local storage, allowing for immediate update for all tabs and windows
-
-## Installation
+### Installation
 
 `npm install react-router-theme@latest`
 
-## Usage
+### Usage
 
-Call the useTheme-hook and pass it your loader data and a fetcher instance.
-Export the loader and action straight from the package if you don't need any custom logic.
-
-Call this hook once in one of your top-level/layout routes, for instance where your `<html>`-tag is rendered.
+1. Find a suitable route (`root.tsx` or other root/layout routes are recommended to enable themes globally)
+2. Import `useTheme` and export `{ loader, action }` from this package
+   - If using custom action or loader, omit the corresponding export
+3. Call the useTheme-hook and pass it your loader data and a fetcher instance.
+4. Use the returned values according to your CSS setup
+   - (for instance by passing `theme` to the `data-theme` attribute, and `setTheme` to a custom theme selector)
 
 ```tsx
 import { useFetcher, useLoaderData } from "react-router";
@@ -46,11 +46,11 @@ export default function Layout() {
 }
 ```
 
-### Custom loader and action
+#### Custom loader and action
 
-Feel free to use a custom loader or action for the given route, the only constraints are:
+Feel free to use a custom loader and/or action for the given route, the only constraints are:
 
-- loader response must contain theme under key `theme` (see `getThemeFromCookie`)
+- loader response must contain theme under key `theme` (provided by `getThemeFromCookie()`)
 
 ```ts
 const loader = async (args) => {
@@ -60,7 +60,7 @@ const loader = async (args) => {
 };
 ```
 
-- actions triggered by theme-change must return a response with a `Set-Cookie`-header (see`themeCookieResponse`)
+- actions triggered by theme-change must return a response with a `Set-Cookie`-header (provided by `themeCookieResponse()`)
 
 ```ts
 export const action = async (args) => {
