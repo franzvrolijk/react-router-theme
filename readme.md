@@ -5,8 +5,8 @@
 - ✅ SSR themes without flashing
 - ✅ Immediate updates across windows and tabs
 - ✅ Perfect for [daisyUI](https://daisyui.com/) themes
-- ✅ Works with [Tailwind CSS data attribute](https://tailwindcss.com/docs/dark-mode#using-a-data-attribute) themes
-- ✅ Works with system-preference dark mode (prefers-color-scheme)
+- ✅ Perfect for [Tailwind CSS data attribute](https://tailwindcss.com/docs/dark-mode#using-a-data-attribute) themes
+- ✅ Compatible with system-preference dark mode for themes supporting it
 - ✅ Made for React Router v7
 
 ## How
