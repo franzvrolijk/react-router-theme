@@ -101,7 +101,7 @@ export const createThemeCookie = async (req: Request) => {
  *
  * @example export { loader, action } from "react-router-themes";
  */
-export const loader: LoaderFunction = async (args: LoaderFunctionArgs) => {
+export const themeLoader: LoaderFunction = async (args: LoaderFunctionArgs) => {
   return { theme: getThemeFromCookie(args.request) };
 };
 
@@ -112,7 +112,7 @@ export const loader: LoaderFunction = async (args: LoaderFunctionArgs) => {
  *
  * @example export { loader, action } from "react-router-themes";
  */
-export const action: ActionFunction = async (args: ActionFunctionArgs) => {
+export const themeAction: ActionFunction = async (args: ActionFunctionArgs) => {
   return new Response(null, {
     headers: {
       "Set-Cookie": await createThemeCookie(args.request),

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.action = exports.loader = exports.createThemeCookie = exports.getThemeFromCookie = exports.useTheme = void 0;
+exports.themeAction = exports.themeLoader = exports.createThemeCookie = exports.getThemeFromCookie = exports.useTheme = void 0;
 const react_1 = require("react");
 const react_router_1 = require("react-router");
 /**
@@ -106,10 +106,10 @@ exports.createThemeCookie = createThemeCookie;
  *
  * @example export { loader, action } from "react-router-themes";
  */
-const loader = (args) => __awaiter(void 0, void 0, void 0, function* () {
+const themeLoader = (args) => __awaiter(void 0, void 0, void 0, function* () {
     return { theme: (0, exports.getThemeFromCookie)(args.request) };
 });
-exports.loader = loader;
+exports.themeLoader = themeLoader;
 /**
  * Export this action from your route for the useTheme hook to work.
  *
@@ -117,11 +117,11 @@ exports.loader = loader;
  *
  * @example export { loader, action } from "react-router-themes";
  */
-const action = (args) => __awaiter(void 0, void 0, void 0, function* () {
+const themeAction = (args) => __awaiter(void 0, void 0, void 0, function* () {
     return new Response(null, {
         headers: {
             "Set-Cookie": yield (0, exports.createThemeCookie)(args.request),
         },
     });
 });
-exports.action = action;
+exports.themeAction = themeAction;
