@@ -2,7 +2,7 @@
 
 Easy theme setup for React Router v7.
 
-- Designed for CSS libraries that support the `<html data-theme="...">` attribute
+- Designed with CSS libraries that support the `<html data-theme="...">` attribute in mind, but use as you wish
 - Stores theme in cookies for SSR
 - Stores theme in local storage for sync with other tabs and windows.
 
