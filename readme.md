@@ -8,6 +8,7 @@
 - ✅ Perfect for [Tailwind CSS data attribute](https://tailwindcss.com/docs/dark-mode#using-a-data-attribute) themes
 - ✅ Compatible with system-preference dark mode for themes supporting it
 - ✅ Made for React Router v7
+- ✅ Simple and lightweight
 
 ## How
 
