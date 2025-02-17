@@ -9,14 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.action = exports.loader = exports.createThemeCookie = exports.getThemeFromCookie = exports.useTheme = void 0;
+exports.themeCookieResponse = exports.action = exports.loader = exports.createThemeCookie = exports.getThemeFromCookie = exports.useTheme = void 0;
 const react_1 = require("react");
 /**
- * Use the theme value wherever you want (probably as the data-theme attribute on your html-tag)
- *
- * Use the setter wherever you want (probably in your own custom theme-selector componennt)
- *
- * @returns [theme, setTheme] A stateful theme variable value and it's setter
+ * See Readme: https://www.npmjs.com/package/react-router-theme
  */
 const useTheme = (loaderData, fetcher) => {
     const { theme: initialTheme } = loaderData;
@@ -41,26 +37,6 @@ const useTheme = (loaderData, fetcher) => {
     return [theme, changeTheme];
 };
 exports.useTheme = useTheme;
-/**
- * If you need custom logic in your route loader, use this to get the theme cookie value.
- *
- * If you don't, use the predefined {@link loader} instead.
- *
- * @example
- * ... loader = (args) => {
- *  ... // custom logic
- *
- *  return {
- *      theme: getThemeFromCookie(args.request),
- *      otherKey1: ...,
- *      otherKey2: ...
- *  };
- * }
- *
- * @param req the incoming request in your loader function
- * @param defaultTheme (optional) the theme to choose if the user has not yet selected a theme (default value is "default")
- * @returns value of the "theme" cookie if found, otherwise default
- */
 const getThemeFromCookie = (req, defaultTheme) => {
     const cookieHeader = req.headers.get("Cookie");
     if (!cookieHeader)
@@ -71,24 +47,6 @@ const getThemeFromCookie = (req, defaultTheme) => {
     return themeMatch[1];
 };
 exports.getThemeFromCookie = getThemeFromCookie;
-/**
- * If you need custom logic in your route action, use this to create the theme cookie.
- *
- * If you don't, use the predefined {@link action} instead.
- *
- * @example
- * ... action = (args) => {
- *  ... // custom logic
- *  return new Response(..., {
- *      headers: {
- *          "Set-Cookie": await createThemeCookie(args.request),
- *          ...
- *      }
- *  });
- * };
- * @param req the incoming action request sent from changeTheme in {@link useTheme}
- * @returns string value of the theme cookie (set the 'Set-Cookie' header value to this in the action response)
- */
 const createThemeCookie = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const formData = yield req.formData();
     const theme = formData.get("theme");
@@ -97,29 +55,19 @@ const createThemeCookie = (req) => __awaiter(void 0, void 0, void 0, function* (
     return `theme=${theme}; Path=/; Max-Age=31536000`;
 });
 exports.createThemeCookie = createThemeCookie;
-/**
- * Export this loader from your route for the useTheme hook to work.
- *
- * If you need custom logic in your loader, see {@link getThemeFromCookie}
- *
- * @example export { loader, action } from "react-router-themes";
- */
 const loader = (args) => __awaiter(void 0, void 0, void 0, function* () {
     return { theme: (0, exports.getThemeFromCookie)(args.request) };
 });
 exports.loader = loader;
-/**
- * Export this action from your route for the useTheme hook to work.
- *
- * If you need custom logic in your action, see {@link createThemeCookie}
- *
- * @example export { loader, action } from "react-router-themes";
- */
 const action = (args) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield (0, exports.themeCookieResponse)(args.request);
+});
+exports.action = action;
+const themeCookieResponse = (req) => __awaiter(void 0, void 0, void 0, function* () {
     return new Response(null, {
         headers: {
-            "Set-Cookie": yield (0, exports.createThemeCookie)(args.request),
+            "Set-Cookie": yield (0, exports.createThemeCookie)(req),
         },
     });
 });
-exports.action = action;
+exports.themeCookieResponse = themeCookieResponse;
