@@ -50,7 +50,7 @@ export default function Layout() {
 
 Feel free to use a custom loader and/or action for the given route, the only constraints are:
 
-- loader response must contain theme under key `theme` (provided by `getThemeFromCookie()`)
+- loader response must contain theme under the key `theme` (provided by `getThemeFromCookie()`)
 
 ```ts
 const loader = async (args) => {
