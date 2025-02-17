@@ -2,9 +2,9 @@
 
 Easy theme setup for React Router v7.
 
-- Designed with CSS libraries that support the `<html data-theme="...">` attribute in mind, but use as you wish
-- Stores theme in cookies for SSR
-- Stores theme in local storage for sync with other tabs and windows.
+Designed with CSS libraries that support the `<html data-theme="...">` attribute in mind, but use as you wish.
+
+This package stores the user's preferred theme in both cookies and local storage, to ensure the correct theme is rendered on the server (in SSR), and that all tabs/windows are immediately affected when changing themes.
 
 # Installation
 
@@ -12,26 +12,30 @@ Easy theme setup for React Router v7.
 
 # Usage
 
-Use the useTheme hook to get and set the theme value in your application.
+Call the useTheme()-hook and pass it the loader data and a fetcher instance.
 Export the loader and action from the package if you don't need any custom logic.
+
+Ideally, call this hook once in your top-level/layout route, where your `<html>`-tag is rendered.
 
 ```tsx
 import { useFetcher, useLoaderData } from "react-router";
 import { useTheme } from "react-router-theme";
 export { loader, action } from "react-router-theme";
 
-const MyComponent = () => {
+export default function Layout() {
   const loaderData = useLoaderData();
   const fetcher = useFetcher();
+
   const [theme, setTheme] = useTheme(loaderData, fetcher);
 
   return (
-    <div data-theme={theme}>
-      <button onClick={() => setTheme("dark")}>Dark Theme</button>
-      <button onClick={() => setTheme("light")}>Light Theme</button>
-    </div>
+    <html data-theme={theme}>
+      ...
+      <button onClick={() => setTheme("dark")}>Dark</button>
+      <button onClick={() => setTheme("light")}>Light</button>
+    </html>
   );
-};
+}
 ```
 
 If you need custom logic in your loader, just make sure to include the theme in the returned object (using getThemeFromCookie)
