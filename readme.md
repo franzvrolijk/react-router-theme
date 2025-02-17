@@ -16,11 +16,14 @@ Use the useTheme hook to get and set the theme value in your application.
 Export the loader and action from the package if you don't need any custom logic.
 
 ```tsx
+import { useFetcher, useLoaderData } from "react-router";
 import { useTheme } from "react-router-theme";
 export { loader, action } from "react-router-theme";
 
 const MyComponent = () => {
-  const [theme, setTheme] = useTheme();
+  const loaderData = useLoaderData();
+  const fetcher = useFetcher();
+  const [theme, setTheme] = useTheme(loaderData, fetcher);
 
   return (
     <div data-theme={theme}>
