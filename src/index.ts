@@ -8,11 +8,10 @@ import { ActionFunction, ActionFunctionArgs, LoaderFunction, LoaderFunctionArgs,
  *
  * @returns [theme, setTheme] A stateful theme variable value and it's setter
  */
-export const useTheme = () => {
-  const { theme: initialTheme } = useLoaderData() as { theme: string };
-  if (!initialTheme) throw new Error("No theme returned from loader");
+export const useTheme = (loaderData: { theme: string }) => {
+  if (!loaderData.theme) throw new Error("No theme returned from loader");
 
-  const [theme, setTheme] = useState<string>(initialTheme);
+  const [theme, setTheme] = useState<string>(loaderData.theme);
 
   const fetcher = useFetcher();
 
@@ -101,7 +100,7 @@ export const createThemeCookie = async (req: Request) => {
  *
  * @example export { loader, action } from "react-router-themes";
  */
-export const themeLoader: LoaderFunction = async (args: LoaderFunctionArgs) => {
+export const loader: LoaderFunction = async (args: LoaderFunctionArgs) => {
   return { theme: getThemeFromCookie(args.request) };
 };
 
@@ -112,7 +111,7 @@ export const themeLoader: LoaderFunction = async (args: LoaderFunctionArgs) => {
  *
  * @example export { loader, action } from "react-router-themes";
  */
-export const themeAction: ActionFunction = async (args: ActionFunctionArgs) => {
+export const action: ActionFunction = async (args: ActionFunctionArgs) => {
   return new Response(null, {
     headers: {
       "Set-Cookie": await createThemeCookie(args.request),

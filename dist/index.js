@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.themeAction = exports.themeLoader = exports.createThemeCookie = exports.getThemeFromCookie = exports.useTheme = void 0;
+exports.action = exports.loader = exports.createThemeCookie = exports.getThemeFromCookie = exports.useTheme = void 0;
 const react_1 = require("react");
 const react_router_1 = require("react-router");
 /**
@@ -19,11 +19,10 @@ const react_router_1 = require("react-router");
  *
  * @returns [theme, setTheme] A stateful theme variable value and it's setter
  */
-const useTheme = () => {
-    const { theme: initialTheme } = (0, react_router_1.useLoaderData)();
-    if (!initialTheme)
+const useTheme = (loaderData) => {
+    if (!loaderData.theme)
         throw new Error("No theme returned from loader");
-    const [theme, setTheme] = (0, react_1.useState)(initialTheme);
+    const [theme, setTheme] = (0, react_1.useState)(loaderData.theme);
     const fetcher = (0, react_router_1.useFetcher)();
     const changeTheme = (theme) => {
         setTheme(theme);
@@ -106,10 +105,10 @@ exports.createThemeCookie = createThemeCookie;
  *
  * @example export { loader, action } from "react-router-themes";
  */
-const themeLoader = (args) => __awaiter(void 0, void 0, void 0, function* () {
+const loader = (args) => __awaiter(void 0, void 0, void 0, function* () {
     return { theme: (0, exports.getThemeFromCookie)(args.request) };
 });
-exports.themeLoader = themeLoader;
+exports.loader = loader;
 /**
  * Export this action from your route for the useTheme hook to work.
  *
@@ -117,11 +116,11 @@ exports.themeLoader = themeLoader;
  *
  * @example export { loader, action } from "react-router-themes";
  */
-const themeAction = (args) => __awaiter(void 0, void 0, void 0, function* () {
+const action = (args) => __awaiter(void 0, void 0, void 0, function* () {
     return new Response(null, {
         headers: {
             "Set-Cookie": yield (0, exports.createThemeCookie)(args.request),
         },
     });
 });
-exports.themeAction = themeAction;
+exports.action = action;
