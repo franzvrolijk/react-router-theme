@@ -25,10 +25,8 @@ This package provides a useTheme-hook along with a pre-defined loader and action
 0. (Add support for data attribute themes by installing daisyUI or setting up themes with Tailwind CSS)
 1. Find a suitable route (`root.tsx` or other root/layout routes are recommended to enable themes globally)
 2. Import `useTheme` and export `{ loader, action }` from this package
-   - If using custom action or loader, omit the corresponding export
 3. Call the useTheme-hook and pass it your loader data and a fetcher instance.
-4. Use the returned values according to your CSS setup
-   - (for instance by passing `theme` to the `data-theme` attribute, and `setTheme` to a custom theme selector)
+4. Use the returned values according to your setup
 
 ```tsx
 import { useFetcher, useLoaderData } from "react-router";
@@ -52,7 +50,8 @@ export default function Layout() {
 
 #### Custom loader and action
 
-Feel free to use a custom loader and/or action for the given route, the only constraints are:
+Feel free to use a custom loader and/or action for the given route (just leave out the export(s) from step 2 if you do).
+The only constraints your loader and action must follow for useTheme to work are:
 
 - loader response must contain theme under the key `theme` (provided by `getThemeFromCookie()`)
 
