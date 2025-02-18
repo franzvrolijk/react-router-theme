@@ -22,6 +22,7 @@ This package provides a useTheme-hook along with a pre-defined loader and action
 
 ### Usage
 
+0. (Add support for data attribute themes by installing daisyUI or setting up themes with Tailwind CSS)
 1. Find a suitable route (`root.tsx` or other root/layout routes are recommended to enable themes globally)
 2. Import `useTheme` and export `{ loader, action }` from this package
    - If using custom action or loader, omit the corresponding export
@@ -97,11 +98,46 @@ const action = async (args) => {
 };
 ```
 
+#### Context and provider
+
+In the sample above, the theme selector is placed directly in the route where the useTheme-hook is called, in order for it to have access to the theme and setter. You might want to place this selector elsewhere in your application (in a sidebar or footer, for instance), and to achieve this, you can use a React context and provider to give your selector access to the theme and setter from anywhere.
+
+```tsx
+// Create a context
+export const ThemeContext = createContext({
+  theme: "default",
+  setTheme: (theme: string) => {},
+});
+```
+
+```tsx
+// Same as before...
+export default function Layout() {
+  const loaderData = useLoaderData();
+  const fetcher = useFetcher();
+
+  const [theme, setTheme] = useTheme(loaderData, fetcher);
+
+  return (
+    // ...but wrapped with a provider
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      <html data-theme={theme}>...</html>
+    </ThemeContext.Provider>
+  );
+}
+```
+
+```tsx
+// Use the context to retrieve the theme and setter instead
+export default function ThemeSelector() {
+  const { theme, setTheme } = useContext(ThemeContext);
+
+  return <>...</>;
+}
+```
+
 Repository
 https://github.com/franzvrolijk/react-router-theme
 
 Bugs
 https://github.com/franzvrolijk/react-router-theme/issues
-
-Homepage
-https://github.com/franzvrolijk/react-router-theme#readme
