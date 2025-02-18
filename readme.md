@@ -7,8 +7,11 @@
 - ✅ Perfect for [daisyUI](https://daisyui.com/) themes
 - ✅ Perfect for [Tailwind CSS data attribute](https://tailwindcss.com/docs/dark-mode#using-a-data-attribute) themes
 - ✅ Compatible with system-preference dark mode for themes supporting it
-- ✅ Made for React Router v7
+- ✅ Made for React Router (v7) and Remix
 - ✅ Simple and lightweight
+
+> [!NOTE]
+> This is essentially a less featured version of [remix-themes](https://www.npmjs.com/package/remix-themes), ideal if you'd like to get up and running with SSR themes with the least amount of effort. For more advanced use cases, consider remix-themes.
 
 ## How
 

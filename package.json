@@ -1,7 +1,7 @@
 {
   "name": "react-router-theme",
-  "version": "1.1.0",
-  "description": "Theme support for React Router v7",
+  "version": "1.1.2",
+  "description": "Theme support for React Router and Remix",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -13,11 +13,18 @@
   },
   "keywords": [
     "react",
+    "react-router",
+    "react-router-theme",
     "router",
     "v7",
     "theme",
     "ssr",
-    "cookie"
+    "cookie",
+    "flashing",
+    "tab",
+    "window",
+    "remix",
+    "state"
   ],
   "author": "Franz Vrolijk",
   "license": "ISC",
@@ -29,8 +36,7 @@
     "typescript": "^5.7.3"
   },
   "peerDependencies": {
-    "@types/react": "^19.0.9",
-    "react": "^19.0.0",
-    "react-router": "^7.1.5"
+    "@types/react": "^18.0.0",
+    "react": "^18.0.0"
   }
 }

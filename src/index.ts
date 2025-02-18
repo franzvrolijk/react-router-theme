@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { ActionFunction, ActionFunctionArgs, FetcherWithComponents, LoaderFunction, LoaderFunctionArgs } from "react-router";
 
 /**
  * See Readme: https://www.npmjs.com/package/react-router-theme
  */
-export const useTheme = (loaderData: { theme: string }, fetcher: FetcherWithComponents<any>) => {
+export const useTheme = (loaderData: { theme: string }, fetcher: any) => {
   const { theme: initialTheme } = loaderData;
 
   if (!initialTheme) throw new Error("No theme returned from loader");
@@ -51,11 +50,11 @@ export const createThemeCookie = async (req: Request) => {
   return `theme=${theme}; Path=/; Max-Age=31536000`;
 };
 
-export const loader: LoaderFunction = async (args: LoaderFunctionArgs) => {
+export const loader = async (args: { request: Request }) => {
   return { theme: getThemeFromCookie(args.request) };
 };
 
-export const action: ActionFunction = async (args: ActionFunctionArgs) => {
+export const action = async (args: { request: Request }) => {
   return await themeCookieResponse(args.request);
 };
 
