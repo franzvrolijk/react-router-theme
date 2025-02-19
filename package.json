@@ -1,6 +1,6 @@
 {
   "name": "react-router-theme",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Theme support for React Router and Remix",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

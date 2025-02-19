@@ -34,7 +34,7 @@ import { useTheme } from "react-router-theme";
 export { loader, action } from "react-router-theme";
 
 export default function Layout() {
-  const loaderData = useLoaderData();
+  const loaderData = useLoaderData() as { theme: string };
   const fetcher = useFetcher();
 
   const [theme, setTheme] = useTheme(loaderData, fetcher);
@@ -56,7 +56,7 @@ The only constraints your loader and action must follow for useTheme to work are
 - loader response must contain theme under the key `theme` (provided by `getThemeFromCookie()`)
 
 ```ts
-const loader = async (args) => {
+export const loader = async (args) => {
   const otherData = ...;
 
   return { theme: await getThemeFromCookie(args.request), otherData: otherData };
@@ -82,7 +82,6 @@ export const action = async (args) => {
 const action = async (args) => {
   const formData = await args.request.formData();
 
-
   if (formData.get("theme")) {
     const additionalData = ...;
 
@@ -97,9 +96,29 @@ const action = async (args) => {
 };
 ```
 
+#### Default theme
+
+If the user has no theme cookie set, the included loader will return `"default"` as the default theme. To override this, either:
+
+- check for default value and override
+
+```tsx
+const [theme, setTheme] = useTheme(loaderData, fetcher);
+
+return <html data-theme={theme !== "default" ? theme : "myDefaultTheme"}>...</html>;
+```
+
+- use a custom loader and pass your desired default value to `getThemeFromCookie`.
+
+```ts
+export const loader = async (args) => {
+  return { theme: await getThemeFromCookie(args.request, "myDefaultTheme") };
+};
+```
+
 #### Context and provider
 
-In the sample above, the theme selector is placed directly in the route where the useTheme-hook is called, in order for it to have access to the theme and setter. You might want to place this selector elsewhere in your application (in a sidebar or footer, for instance), and to achieve this, you can use a React context and provider to give your selector access to the theme and setter from anywhere.
+If you need access to the theme or setter in a different route/component from where you call the useTheme-hook (for instance in a custom theme selector in your sidebar/footer/etc. ) you can use a React context and provider.
 
 ```tsx
 // Create a context
@@ -112,7 +131,7 @@ export const ThemeContext = createContext({
 ```tsx
 // Same as before...
 export default function Layout() {
-  const loaderData = useLoaderData();
+  const loaderData = useLoaderData() as { theme: string };
   const fetcher = useFetcher();
 
   const [theme, setTheme] = useTheme(loaderData, fetcher);
@@ -127,7 +146,7 @@ export default function Layout() {
 ```
 
 ```tsx
-// Use the context to retrieve the theme and setter instead
+// Use the context to retrieve the theme and setter, as opposed to params
 export default function ThemeSelector() {
   const { theme, setTheme } = useContext(ThemeContext);
 
