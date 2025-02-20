@@ -9,12 +9,11 @@
 - ✅ Compatible with system-preference dark mode for themes supporting it
 - ✅ Made for React Router (v7) and Remix
 
-> [!NOTE]
-> This is essentially a less featured version of [remix-themes](https://www.npmjs.com/package/remix-themes), ideal if you'd like to get up and running with SSR themes with the least amount of effort. For more advanced use cases, consider remix-themes.
-
 ## How
 
-This package provides a useTheme-hook along with a pre-defined loader and action to simplify enabling "SSR themes". Utility functions for implementing this in custom loaders and actions are also provided.
+This package provides a useTheme-hook, along with a pre-defined loader and action, to simplify support for themes in server-side-rendered Remix/React Router apps. Utility functions for custom loaders and actions are also provided.
+
+The hook assures that the user's preferred theme is stored in cookies and local storage when set, loaded by the server when rendering server-side, and immediately updated across all tabs and windows when updated.
 
 ### Installation
 
@@ -22,11 +21,11 @@ This package provides a useTheme-hook along with a pre-defined loader and action
 
 ### Usage
 
-0. (Add support for data attribute themes by installing daisyUI or setting up themes with Tailwind CSS)
-1. Find a suitable route (`root.tsx` or other root/layout routes are recommended to enable themes globally)
-2. Import `useTheme` and export `{ loader, action }` from this package
-3. Call the useTheme-hook and pass it your loader data and a fetcher instance.
-4. Use the returned values according to your setup
+> [!NOTE]
+> Make sure your application is set up to support themes through the `data-theme`-attribute (for instance by using daisyUI or custom Tailwind data attribute themes)
+
+1. Export `{ loader, action }` from this package in the route rendering your `<html>`-tag
+2. Call the `useTheme`-hook in the component, and use the return values to set and update the theme
 
 ```tsx
 import { useFetcher, useLoaderData } from "react-router";
@@ -50,70 +49,47 @@ export default function Layout() {
 
 #### Custom loader and action
 
-Feel free to use a custom loader and/or action for the given route (just leave out the export(s) from step 2 if you do).
-The only constraints your loader and action must follow for useTheme to work are:
+If you need to customize the loader or action on the given route (or simply don't want to use the provided ones) just make sure to:
 
-- loader response must contain theme under the key `theme` (provided by `getThemeFromCookie()`)
+- include `theme: getThemeFromCookie(request)` in your loader response
 
 ```ts
-export const loader = async (args) => {
+export const loader = (args) => {
   const otherData = ...;
 
-  return { theme: await getThemeFromCookie(args.request), otherData: otherData };
+  return {
+    theme: getThemeFromCookie(args.request),
+    otherData: otherData
+  };
 };
 ```
 
-- actions triggered by theme-change must return a response with a `Set-Cookie`-header (provided by `themeCookieResponse()`)
+- return `await themeCookieResponse(request)` from your action if the form data matches `'action': 'themeChange'`
 
 ```ts
 export const action = async (args) => {
   const formData = await args.request.formData();
 
-  // Use formData to identify theme-change requests
-  if (formData.get("theme"))
-    return await themeCookieResponse(args.request);
+  if (formData.get("action") === "themeChange") return await themeCookieResponse(args.request);
 
-  // Other actions
-  ...
+  // Other actions...
 };
 ```
 
+(custom responses are also fine, just include `Set-Cookie`-header using `await createThemeCookie(request)`)
+
 ```ts
-const action = async (args) => {
-  const formData = await args.request.formData();
-
-  if (formData.get("theme")) {
-    const additionalData = ...;
-
-    // Custom responses are also fine, just include the header using createThemeCookie
-    return new Reponse(additionalData, {
-      headers: { "Set-Cookie": await createThemeCookie(args.request) },
-    });
-  }
-
-  // Other actions
-  ...
-};
+return new Response(body, {
+  headers: { "Set-Cookie": await createThemeCookie(args.request) },
+});
 ```
 
 #### Default theme
 
-If the user has no theme cookie set, the included loader will return `"default"` as the default theme. To override this, either:
-
-- check for default value and override
+If the user has no theme cookie set, the returned theme will be `"default"`. To override this, pass your desired default value as a third parameter to the hook
 
 ```tsx
-const [theme, setTheme] = useTheme(loaderData, fetcher);
-
-return <html data-theme={theme !== "default" ? theme : "myDefaultTheme"}>...</html>;
-```
-
-- use a custom loader and pass your desired default value to `getThemeFromCookie`.
-
-```ts
-export const loader = async (args) => {
-  return { theme: await getThemeFromCookie(args.request, "myDefaultTheme") };
-};
+const [theme, setTheme] = useTheme(loaderData, fetcher, "myDefaultTheme");
 ```
 
 #### Context and provider
@@ -121,9 +97,9 @@ export const loader = async (args) => {
 If you need access to the theme or setter in a different route/component from where you call the useTheme-hook (for instance in a custom theme selector in your sidebar/footer/etc. ) you can use a React context and provider.
 
 ```tsx
-// Create a context
+// Create a context (do this in a separate file).
 export const ThemeContext = createContext({
-  theme: "default",
+  theme: "",
   setTheme: (theme: string) => {},
 });
 ```

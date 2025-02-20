@@ -3,17 +3,27 @@ import { useEffect, useState } from "react";
 /**
  * See Readme: https://www.npmjs.com/package/react-router-theme
  */
-export const useTheme = (loaderData: { theme: string }, fetcher: any) => {
-  const { theme: initialTheme } = loaderData;
+export const useTheme = (loaderData: any, fetcher: any, defaultTheme?: string) => {
+  let initialTheme: string;
 
-  if (!initialTheme) throw new Error("No theme returned from loader");
+  if (!loaderData || !("theme" in loaderData)) {
+    throw new Error("Provided loader data does not contain theme.");
+  }
+
+  if (typeof loaderData.theme === "string") {
+    initialTheme = loaderData.theme;
+  } else if (loaderData.theme === null) {
+    initialTheme = defaultTheme ?? "default";
+  } else {
+    throw new Error("Provider loader data contains an invalid value for theme.");
+  }
 
   const [theme, setTheme] = useState<string>(initialTheme);
 
   const changeTheme = (theme: string) => {
     setTheme(theme);
     localStorage.setItem("theme", theme);
-    fetcher.submit({ theme: theme }, { method: "POST" });
+    fetcher.submit({ action: "themeChange", theme: theme }, { method: "POST" });
   };
 
   // Sync theme updates across windows and tabs using local storage
@@ -31,12 +41,16 @@ export const useTheme = (loaderData: { theme: string }, fetcher: any) => {
   return [theme, changeTheme] as const;
 };
 
-export const getThemeFromCookie = (req: Request, defaultTheme?: string) => {
+/**
+ * @param req incoming request in loader
+ * @returns the value of the theme cookie if found, otherwise NULL
+ */
+export const getThemeFromCookie = (req: Request) => {
   const cookieHeader = req.headers.get("Cookie");
-  if (!cookieHeader) return defaultTheme ?? "default";
+  if (!cookieHeader) return null;
 
   const themeMatch = cookieHeader.match(/theme=([^;]+)/);
-  if (!themeMatch) return defaultTheme ?? "default";
+  if (!themeMatch) return null;
 
   return themeMatch[1];
 };
@@ -55,7 +69,11 @@ export const loader = async (args: { request: Request }) => {
 };
 
 export const action = async (args: { request: Request }) => {
-  return await themeCookieResponse(args.request);
+  const formData = await args.request.formData();
+
+  if (formData.get("action") === "themeChange") return await themeCookieResponse(args.request);
+
+  return new Response("Unknown action. Create a custom action function to handle non-theme related requests.", { status: 500 });
 };
 
 export const themeCookieResponse = async (req: Request) => {

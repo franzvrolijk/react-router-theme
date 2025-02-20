@@ -14,15 +14,25 @@ const react_1 = require("react");
 /**
  * See Readme: https://www.npmjs.com/package/react-router-theme
  */
-const useTheme = (loaderData, fetcher) => {
-    const { theme: initialTheme } = loaderData;
-    if (!initialTheme)
-        throw new Error("No theme returned from loader");
+const useTheme = (loaderData, fetcher, defaultTheme) => {
+    let initialTheme;
+    if (!loaderData || !("theme" in loaderData)) {
+        throw new Error("Provided loader data does not contain theme.");
+    }
+    if (typeof loaderData.theme === "string") {
+        initialTheme = loaderData.theme;
+    }
+    else if (loaderData.theme === null) {
+        initialTheme = defaultTheme !== null && defaultTheme !== void 0 ? defaultTheme : "default";
+    }
+    else {
+        throw new Error("Provider loader data contains an invalid value for theme.");
+    }
     const [theme, setTheme] = (0, react_1.useState)(initialTheme);
     const changeTheme = (theme) => {
         setTheme(theme);
         localStorage.setItem("theme", theme);
-        fetcher.submit({ theme: theme }, { method: "POST" });
+        fetcher.submit({ action: "themeChange", theme: theme }, { method: "POST" });
     };
     // Sync theme updates across windows and tabs using local storage
     const localStorageEventHandler = (event) => {
@@ -37,13 +47,17 @@ const useTheme = (loaderData, fetcher) => {
     return [theme, changeTheme];
 };
 exports.useTheme = useTheme;
-const getThemeFromCookie = (req, defaultTheme) => {
+/**
+ * @param req incoming request in loader
+ * @returns the value of the theme cookie if found, otherwise NULL
+ */
+const getThemeFromCookie = (req) => {
     const cookieHeader = req.headers.get("Cookie");
     if (!cookieHeader)
-        return defaultTheme !== null && defaultTheme !== void 0 ? defaultTheme : "default";
+        return null;
     const themeMatch = cookieHeader.match(/theme=([^;]+)/);
     if (!themeMatch)
-        return defaultTheme !== null && defaultTheme !== void 0 ? defaultTheme : "default";
+        return null;
     return themeMatch[1];
 };
 exports.getThemeFromCookie = getThemeFromCookie;
@@ -60,7 +74,10 @@ const loader = (args) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.loader = loader;
 const action = (args) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield (0, exports.themeCookieResponse)(args.request);
+    const formData = yield args.request.formData();
+    if (formData.get("action") === "themeChange")
+        return yield (0, exports.themeCookieResponse)(args.request);
+    return new Response("Unknown action. Create a custom action function to handle non-theme related requests.", { status: 500 });
 });
 exports.action = action;
 const themeCookieResponse = (req) => __awaiter(void 0, void 0, void 0, function* () {
