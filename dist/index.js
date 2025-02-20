@@ -61,13 +61,12 @@ const getThemeFromCookie = (req) => {
     return themeMatch[1];
 };
 exports.getThemeFromCookie = getThemeFromCookie;
-const createThemeCookie = (req) => __awaiter(void 0, void 0, void 0, function* () {
-    const formData = yield req.formData();
+const createThemeCookie = (formData) => {
     const theme = formData.get("theme");
     if (!theme)
         throw new Error("No theme specified in action form data");
     return `theme=${theme}; Path=/; Max-Age=31536000`;
-});
+};
 exports.createThemeCookie = createThemeCookie;
 const loader = (args) => __awaiter(void 0, void 0, void 0, function* () {
     return { theme: (0, exports.getThemeFromCookie)(args.request) };
@@ -76,15 +75,15 @@ exports.loader = loader;
 const action = (args) => __awaiter(void 0, void 0, void 0, function* () {
     const formData = yield args.request.formData();
     if (formData.get("action") === "themeChange")
-        return yield (0, exports.themeCookieResponse)(args.request);
+        return (0, exports.themeCookieResponse)(formData);
     return new Response("Unknown action. Create a custom action function to handle non-theme related requests.", { status: 500 });
 });
 exports.action = action;
-const themeCookieResponse = (req) => __awaiter(void 0, void 0, void 0, function* () {
+const themeCookieResponse = (formData) => {
     return new Response(null, {
         headers: {
-            "Set-Cookie": yield (0, exports.createThemeCookie)(req),
+            "Set-Cookie": (0, exports.createThemeCookie)(formData),
         },
     });
-});
+};
 exports.themeCookieResponse = themeCookieResponse;

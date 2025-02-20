@@ -64,24 +64,28 @@ export const loader = (args) => {
 };
 ```
 
-- return `await themeCookieResponse(request)` from your action if the form data matches `'action': 'themeChange'`
+- return `await themeCookieResponse(formData)` from your action if the form data matches `action: 'themeChange'`
 
 ```ts
 export const action = async (args) => {
   const formData = await args.request.formData();
 
-  if (formData.get("action") === "themeChange") return await themeCookieResponse(args.request);
+  if (formData.get("action") === "themeChange") return themeCookieResponse(formData);
 
   // Other actions...
 };
 ```
 
-(custom responses are also fine, just include `Set-Cookie`-header using `await createThemeCookie(request)`)
+(custom responses are also fine, just include `Set-Cookie`-header using `createThemeCookie(formData)`)
 
 ```ts
-return new Response(body, {
-  headers: { "Set-Cookie": await createThemeCookie(args.request) },
-});
+if (formData.get("action") === "themeChange") {
+  const otherData = ...;
+
+  return new Response(otherData, {
+    headers: { "Set-Cookie": createThemeCookie(formData) },
+  });
+}
 ```
 
 #### Default theme

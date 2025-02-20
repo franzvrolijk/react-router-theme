@@ -55,8 +55,7 @@ export const getThemeFromCookie = (req: Request) => {
   return themeMatch[1];
 };
 
-export const createThemeCookie = async (req: Request) => {
-  const formData = await req.formData();
+export const createThemeCookie = (formData: FormData) => {
   const theme = formData.get("theme");
 
   if (!theme) throw new Error("No theme specified in action form data");
@@ -71,15 +70,15 @@ export const loader = async (args: { request: Request }) => {
 export const action = async (args: { request: Request }) => {
   const formData = await args.request.formData();
 
-  if (formData.get("action") === "themeChange") return await themeCookieResponse(args.request);
+  if (formData.get("action") === "themeChange") return themeCookieResponse(formData);
 
   return new Response("Unknown action. Create a custom action function to handle non-theme related requests.", { status: 500 });
 };
 
-export const themeCookieResponse = async (req: Request) => {
+export const themeCookieResponse = (formData: FormData) => {
   return new Response(null, {
     headers: {
-      "Set-Cookie": await createThemeCookie(req),
+      "Set-Cookie": createThemeCookie(formData),
     },
   });
 };
