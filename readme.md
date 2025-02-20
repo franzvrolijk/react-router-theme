@@ -64,7 +64,7 @@ export const loader = (args) => {
 };
 ```
 
-- return `await themeCookieResponse(formData)` from your action if the form data matches `action: 'themeChange'`
+- return `themeCookieResponse(formData)` from your action if the form data matches `action: 'themeChange'`
 
 ```ts
 export const action = async (args) => {
