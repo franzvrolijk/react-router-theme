@@ -22,7 +22,7 @@ The hook assures that the user's preferred theme is stored in cookies and local 
 ### Usage
 
 > [!NOTE]
-> Make sure your application is set up to support themes through the `data-theme`-attribute (for instance by using daisyUI or custom Tailwind data attribute themes)
+> Whilst you can apply your themes however you'd like, this package was designed and tested with data attribute themes. [This works out of the box with daisyUI](https://daisyui.com/docs/themes/), but if you'd like a custom Tailwind approach, you can have a look at [react-router-theme-example](https://github.com/franzvrolijk/react-router-theme-example).
 
 1. Export `{ loader, action }` from this package in the route rendering your `<html>`-tag
 2. Call the `useTheme`-hook in the component, and use the return values to set and update the theme
