@@ -13,7 +13,7 @@
 
 This package provides a useTheme-hook, along with a pre-defined loader and action, to simplify support for themes in server-side-rendered Remix/React Router apps. Utility functions for custom loaders and actions are also provided.
 
-The hook assures that the user's preferred theme is stored in cookies and local storage when set, loaded by the server when rendering server-side, and immediately updated across all tabs and windows when updated.
+The hook assures that the user's preferred theme is stored in cookies and local storage when set, loaded by the server when rendering server-side, and immediately visible across all tabs and windows when updated.
 
 ### Installation
 
@@ -49,7 +49,7 @@ export default function Layout() {
 
 #### Custom loader and action
 
-If you need to customize the loader or action on the given route (or simply don't want to use the provided ones) just make sure to:
+If you need to customize the loader or action on the given route (or simply don't want to use the provided ones), just make sure to:
 
 - include `theme: getThemeFromCookie(request)` in your loader response
 
@@ -69,8 +69,9 @@ export const loader = (args) => {
 ```ts
 export const action = async (args) => {
   const formData = await args.request.formData();
+  const action = formData.get("action");
 
-  if (formData.get("action") === "themeChange") return themeCookieResponse(formData);
+  if (action === "themeChange") return themeCookieResponse(formData);
 
   // Other actions...
 };
@@ -79,7 +80,7 @@ export const action = async (args) => {
 (custom responses are also fine, just include `Set-Cookie`-header using `createThemeCookie(formData)`)
 
 ```ts
-if (formData.get("action") === "themeChange") {
+if (action === "themeChange") {
   const otherData = ...;
 
   return new Response(otherData, {
@@ -90,7 +91,7 @@ if (formData.get("action") === "themeChange") {
 
 #### Default theme
 
-If the user has no theme cookie set, the returned theme will be `"default"`. To override this, pass your desired default value as a third parameter to the hook
+If the user has no theme cookie set, the returned theme will be `"default"`. To specify a different default value, pass it as a third parameter to the hook:
 
 ```tsx
 const [theme, setTheme] = useTheme(loaderData, fetcher, "myDefaultTheme");
@@ -98,7 +99,7 @@ const [theme, setTheme] = useTheme(loaderData, fetcher, "myDefaultTheme");
 
 #### Context and provider
 
-If you need access to the theme or setter in a different route/component from where you call the useTheme-hook (for instance in a custom theme selector in your sidebar/footer/etc. ) you can use a React context and provider.
+If you need access to the theme or setter in a different route/component (for instance in a custom theme selector in your sidebar/footer/etc.), you can use a React context and provider.
 
 ```tsx
 // Create a context (do this in a separate file).
@@ -126,7 +127,7 @@ export default function Layout() {
 ```
 
 ```tsx
-// Use the context to retrieve the theme and setter, as opposed to params
+// Use the context to access theme and setter
 export default function ThemeSelector() {
   const { theme, setTheme } = useContext(ThemeContext);
 
