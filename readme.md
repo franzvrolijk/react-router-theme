@@ -46,6 +46,8 @@ export default function Layout() {
   );
 }
 ```
+> [!IMPORTANT]
+> The above example assumes that `Layout` is rendered in the route exporting the loader and action function. If yours isn't, or if you want to call the `useTheme`-hook from another route, make sure to use  `useRouteLoaderData(...)` instead and pass the route ID for the route with the theme loader function.
 
 #### Custom loader and action
 
